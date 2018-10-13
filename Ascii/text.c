@@ -35,8 +35,18 @@ uint fractalAlgo(complex z, complex c, uint cutoffDepth) {
 
 
 void printline(char *lineDat, int size) {
+	char lookup[8][2] = { { 15,35 },{ 12,34 },{ 10,91 },{ 8,39 },{ 5,93 },{ 3,46 },{ 2,44 },{ 0,32 } }; //{inValue,outValue}
 	for (int i = 0; i < size; i++) {
-		printf("%c", lineDat[i]);
+		char found = 0;
+		for (int j = 0; j < sizeof(lookup); j++) {
+			if (lineDat[i] == lookup[j][0]) {
+				printf("%c", lookup[j][1]);
+				found = 1;
+			}
+		}
+		if (found == 0) {
+			printf("%c", lineDat[i]+64);
+		}
 	}
 	printf("\n");
 }
@@ -66,7 +76,7 @@ int main(int argc, char** argv) {
 		char *linedat = malloc(outDimensions[0]);
 
 		for (int x = -outDimensions[0]; x < outDimensions[0]; x+=2) { //loop for each true 'pixel'
-			char out = 65; //set to 0 when added lookup table
+			char out = 0;
 
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) { //loop for super sample
