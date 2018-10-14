@@ -90,6 +90,7 @@ int main(int argc, char** argv) {
 		c(x,y) : coordinate of centre of drawn fractal
 		z(x) : zoom value for drawn fractal
 		j(x,y) : julia values (optional, added to instead draw a julia set)
+		o(x) : cutoff value
 	*/
 
 	int outDimensions[2] = { 60,30 }; //x,y
@@ -97,6 +98,7 @@ int main(int argc, char** argv) {
 	double zoom = 1;
 	double julia[2];
 	char isjulia = 0;
+	uint cutoff = 1024;
 
 	for (int i = 1; i < argc; i++) { //set arg values
 		char type = argv[i][0];
@@ -119,6 +121,9 @@ int main(int argc, char** argv) {
 				julia[0] = val[0];
 				julia[1] = val[1];
 				isjulia = 1;
+			} else if (type == 'o' || type == 'O') {
+				printf("Cutoff %d \n", (uint) val[0]);
+				cutoff = (uint)val[0];
 			}
 		} 
 	}
@@ -143,9 +148,9 @@ int main(int argc, char** argv) {
 					uint fractalreturn;
 
 					if (isjulia) {
-						fractalreturn = fractalAlgo(inZ, (complex) {julia[0],julia[1]}, 1024);
+						fractalreturn = fractalAlgo(inZ, (complex) {julia[0],julia[1]}, cutoff);
 					} else {
-						fractalreturn = fractalAlgo((complex) { 0, 0 }, inZ, 1024);
+						fractalreturn = fractalAlgo((complex) { 0, 0 }, inZ, cutoff);
 					}
 
 					if (fractalreturn == 0) { //fixed cutoff
