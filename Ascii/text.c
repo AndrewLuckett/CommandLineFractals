@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 typedef struct complexnumber {
 	double real;
@@ -51,6 +52,38 @@ void printline(char *lineDat, int size) {
 	printf("\n");
 }
 
+int readValues(double **retData, char *inData) { //Needs reworking
+	if (inData[1] != 40) { return 1;  } // if(inData[1] != '(' )
+	
+	int valuecount = 0;
+	double *values = malloc(sizeof(*retData));
+
+	int currentSize = 0;
+	char current[sizeof(inData)]; //data cant be bigger that source
+
+	for (int i = 2; i < sizeof(inData); i++) {
+		if (inData[i] == 41) { //if(inData[i] == ')' )
+			//printf("Found value ): %f \n", atof(current));
+			values[valuecount] = atof(current);
+			*retData = values;
+			
+			return 0;
+
+		} else if (inData[i] == 44) { //if(inData[i] == ',')
+			//printf("Found value ,: %f \n", atof(current));
+			values[valuecount] = atof(current);
+			valuecount++;
+
+			currentSize = 0;
+			char current[sizeof(inData)];
+		} else {
+			current[currentSize] = inData[i];
+			currentSize++;
+		}
+	}
+	return 1;
+}
+
 int main(int argc, char** argv) {
 	/*
 		d(x,y) : output columns and rows
@@ -65,7 +98,24 @@ int main(int argc, char** argv) {
 	double julia[2];
 
 	for (int i = 0; i < argc; i++) { //set arg values
-		printf("%s \n", argv[i]);
+		char type = argv[i][0];
+		if (type == 'c' || type == 'C') {
+			double *val;
+			if (!readValues(&val, argv[i])) {
+				printf("Centre %f,%f \n", val[0], val[1]);
+				centre[0] = val[0];
+				centre[1] = val[1];
+			}
+
+		} else if (type == 'z' || type == 'Z') {
+			double *val;
+			if (!readValues(&val, argv[i])) {
+				printf("zoom %f \n", val[0]);
+				zoom = (int)val[0];
+			}
+		}
+
+		
 	}
 
 	int mathDimension = min(outDimensions[0], outDimensions[1]);
@@ -94,6 +144,8 @@ int main(int argc, char** argv) {
 		}
 		printline(linedat,outDimensions[0]);
 	}
+
+	return 0;
 }
 
 
