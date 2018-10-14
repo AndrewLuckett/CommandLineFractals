@@ -96,6 +96,7 @@ int main(int argc, char** argv) {
 	double centre[2] = { 0,0 }; //x,y
 	double zoom = 1;
 	double julia[2];
+	char isjulia = 0;
 
 	for (int i = 1; i < argc; i++) { //set arg values
 		char type = argv[i][0];
@@ -113,6 +114,11 @@ int main(int argc, char** argv) {
 			} else if (type == 'z' || type == 'Z') {
 				printf("zoom %d \n", (int)val[0]);
 				zoom = (int)val[0];
+			} else if (type == 'j' || type == 'J') {
+				printf("Julia set %f,%f \n", val[0], val[1]);
+				julia[0] = val[0];
+				julia[1] = val[1];
+				isjulia = 1;
 			}
 		} 
 	}
@@ -133,8 +139,16 @@ int main(int argc, char** argv) {
 						pixelwidth*(x + j) + centre[0],
 						pixelwidth*(y + i) + centre[1]
 					};
-					complex inC = { 0,0 };
-					if (fractalAlgo(inC,inZ,1024) == 0) { //fixed cutoff
+					
+					uint fractalreturn;
+
+					if (isjulia) {
+						fractalreturn = fractalAlgo(inZ, (complex) {julia[0],julia[1]}, 1024);
+					} else {
+						fractalreturn = fractalAlgo((complex) { 0, 0 }, inZ, 1024);
+					}
+
+					if (fractalreturn == 0) { //fixed cutoff
 						out = out + (char) pow(2, 2 * i + j);
 					}					
 				}
