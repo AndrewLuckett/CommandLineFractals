@@ -39,7 +39,7 @@ void printline(char *lineDat, int size) {
 	char lookup[8][2] = { { 15,35 },{ 12,34 },{ 10,91 },{ 8,39 },{ 5,93 },{ 3,46 },{ 2,44 },{ 0,32 } }; //{inValue,outValue}
 	for (int i = 0; i < size; i++) {
 		char found = 0;
-		for (int j = 0; j < sizeof(lookup); j++) {
+		for (int j = 0; j < sizeof(lookup)/2; j++) {
 			if (lineDat[i] == lookup[j][0]) {
 				printf("%c", lookup[j][1]);
 				found = 1;
